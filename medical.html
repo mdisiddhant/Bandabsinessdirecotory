@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>📦 मेडिकल ऑर्डर फॉर्म</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      padding: 30px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #00a65a;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">💊 मेडिकल दवा ऑर्डर फॉर्म</h2>
+
+<form id="medicalForm">
+  <input type="text" id="name" placeholder="👤 नाम" required>
+  <input type="text" id="mobile" placeholder="📱 मोबाइल नंबर" required>
+  <input type="text" id="address" placeholder="🏠 पूरा पता" required>
+
+  <select id="area" required>
+    <option value="">🏙️ अपना एरिया चुनें</option>
+    <option value="Swaraj Colony">Swaraj Colony</option>
+    <option value="Civil Lines">Civil Lines</option>
+    <!-- Add more areas here -->
+  </select>
+
+  <textarea id="medicine" placeholder="📝 दवाओं के नाम लिखें" rows="4" required></textarea>
+  <label>📷 डॉक्टर की पर्ची अपलोड करें:</label>
+  <input type="file" id="prescription" accept="image/*">
+
+  <button type="submit">📨 ऑर्डर भेजें</button>
+</form>
+
+<script>
+const botToken = "7729928604:AAEINikbhwHTMSK1pgV3nROUfSGEVb-z2r4"; // Your Bot Token
+
+// Chat IDs
+const adminChatId = "6798434092"; // You
+const shopMap = {
+  "Swaraj Colony": "6798434092",
+  "Civil Lines": "6798434092"
+};
+const employeeMap = {
+  "Swaraj Colony": "6798434092",
+  "Civil Lines": "6798434092"
+};
+
+document.getElementById("medicalForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const area = document.getElementById("area").value;
+  const medicine = document.getElementById("medicine").value.trim();
+  const imageFile = document.getElementById("prescription").files[0];
+
+  const message = `🧾 नया मेडिकल ऑर्डर प्राप्त हुआ:\n👤 नाम: ${name}\n📱 मोबाइल: ${mobile}\n🏠 पता: ${address}\n🗺️ एरिया: ${area}\n💊 दवाएं:\n${medicine}`;
+
+  const sendToChat = (chatId) => {
+    if(imageFile){
+      const formData = new FormData();
+      formData.append("chat_id", chatId);
+      formData.append("caption", message);
+      formData.append("photo", imageFile);
+      fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        method: "POST",
+        body: formData
+      });
+    } else {
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+      fetch(url);
+    }
+  }
+
+  // Send to Admin, Shop, and Employee
+  sendToChat(adminChatId);
+  if(shopMap[area]) sendToChat(shopMap[area]);
+  if(employeeMap[area]) sendToChat(employeeMap[area]);
+
+  alert("✅ ऑर्डर सफलतापूर्वक भेजा गया!");
+  document.getElementById("medicalForm").reset();
+});
+</script>
+
+</body>
+</html>
