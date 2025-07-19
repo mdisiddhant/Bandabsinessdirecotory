@@ -2,110 +2,120 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <title>📦 मेडिकल ऑर्डर फॉर्म</title>
+  <title>मेडिकल सेवा - Banda Ki Seva</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f2f2;
-      padding: 30px;
-    }
-    form {
-      background: #fff;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin: auto;
     }
-    input, select, textarea, button {
+    h2 {
+      color: green;
+    }
+    select, input, textarea, button {
+      padding: 8px;
+      margin: 6px 0;
       width: 100%;
-      margin-bottom: 15px;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      max-width: 400px;
+      display: block;
     }
-    button {
-      background: #00a65a;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    .info {
+      background: #d4edda;
+      border-left: 5px solid #28a745;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    .shop-info {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">💊 मेडिकल दवा ऑर्डर फॉर्म</h2>
+<h2>📦 Banda Ki Seva - मेडिकल ऑर्डर सेवा</h2>
 
 <form id="medicalForm">
-  <input type="text" id="name" placeholder="👤 नाम" required>
-  <input type="text" id="mobile" placeholder="📱 मोबाइल नंबर" required>
-  <input type="text" id="address" placeholder="🏠 पूरा पता" required>
+  <label>👤 ग्राहक का नाम:</label>
+  <input type="text" required>
 
-  <select id="area" required>
-    <option value="">🏙️ अपना एरिया चुनें</option>
+  <label>📞 मोबाइल नंबर:</label>
+  <input type="tel" required>
+
+  <label>🏠 पूरा पता:</label>
+  <textarea required></textarea>
+
+  <label>🌐 अपना एरिया चुनें:</label>
+  <select id="areaSelect" required onchange="updateMedicalInfo()">
+    <option value="">-- एरिया चुनें --</option>
     <option value="Swaraj Colony">Swaraj Colony</option>
     <option value="Civil Lines">Civil Lines</option>
-    <!-- Add more areas here -->
+    <option value="Kalu Kuwan">Kalu Kuwan</option>
+    <option value="Chhoti Bazar">Chhoti Bazar</option>
+    <option value="Khutla">Khutla</option>
   </select>
 
-  <textarea id="medicine" placeholder="📝 दवाओं के नाम लिखें" rows="4" required></textarea>
-  <label>📷 डॉक्टर की पर्ची अपलोड करें:</label>
-  <input type="file" id="prescription" accept="image/*">
+  <label>💊 किस दवा की जरूरत है?</label>
+  <textarea required></textarea>
 
-  <button type="submit">📨 ऑर्डर भेजें</button>
+  <label>📷 डॉक्टर की पर्ची अपलोड करें:</label>
+  <input type="file" accept="image/*">
+
+  <button type="submit">✅ ऑर्डर सबमिट करें</button>
 </form>
 
+<div id="infoBox" class="info" style="display: none;"></div>
+
+<div class="shop-info" id="medicalShopInfo" style="display: none;">
+  <h3>🔍 आपके एरिया की मेडिकल शॉप:</h3>
+  <p><strong>नाम:</strong> <span id="shopName"></span></p>
+  <p><strong>कर्मचारी से संपर्क करें:</strong> <a id="whatsappLink" target="_blank">WhatsApp करें</a></p>
+</div>
+
 <script>
-const botToken = "7729928604:AAEINikbhwHTMSK1pgV3nROUfSGEVb-z2r4"; // Your Bot Token
+  const shopMap = {
+    "Swaraj Colony": {
+      shopName: "Swaraj Medical Store",
+      whatsapp: "https://wa.me/919999111001"
+    },
+    "Civil Lines": {
+      shopName: "Health First Pharmacy",
+      whatsapp: "https://wa.me/919999111002"
+    },
+    "Kalu Kuwan": {
+      shopName: "Kalu Medicos",
+      whatsapp: "https://wa.me/919999111003"
+    },
+    "Chhoti Bazar": {
+      shopName: "Bazar Medical Centre",
+      whatsapp: "https://wa.me/919999111004"
+    },
+    "Khutla": {
+      shopName: "Khutla Health Hub",
+      whatsapp: "https://wa.me/919999111005"
+    }
+  };
 
-// Chat IDs
-const adminChatId = "6798434092"; // You
-const shopMap = {
-  "Swaraj Colony": "6798434092",
-  "Civil Lines": "6798434092"
-};
-const employeeMap = {
-  "Swaraj Colony": "6798434092",
-  "Civil Lines": "6798434092"
-};
-
-document.getElementById("medicalForm").addEventListener("submit", function(e){
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  const address = document.getElementById("address").value.trim();
-  const area = document.getElementById("area").value;
-  const medicine = document.getElementById("medicine").value.trim();
-  const imageFile = document.getElementById("prescription").files[0];
-
-  const message = `🧾 नया मेडिकल ऑर्डर प्राप्त हुआ:\n👤 नाम: ${name}\n📱 मोबाइल: ${mobile}\n🏠 पता: ${address}\n🗺️ एरिया: ${area}\n💊 दवाएं:\n${medicine}`;
-
-  const sendToChat = (chatId) => {
-    if(imageFile){
-      const formData = new FormData();
-      formData.append("chat_id", chatId);
-      formData.append("caption", message);
-      formData.append("photo", imageFile);
-      fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-        method: "POST",
-        body: formData
-      });
+  function updateMedicalInfo() {
+    const area = document.getElementById("areaSelect").value;
+    const infoBox = document.getElementById("medicalShopInfo");
+    if (shopMap[area]) {
+      document.getElementById("shopName").textContent = shopMap[area].shopName;
+      document.getElementById("whatsappLink").href = shopMap[area].whatsapp;
+      document.getElementById("whatsappLink").textContent = shopMap[area].whatsapp;
+      infoBox.style.display = "block";
     } else {
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-      fetch(url);
+      infoBox.style.display = "none";
     }
   }
 
-  // Send to Admin, Shop, and Employee
-  sendToChat(adminChatId);
-  if(shopMap[area]) sendToChat(shopMap[area]);
-  if(employeeMap[area]) sendToChat(employeeMap[area]);
-
-  alert("✅ ऑर्डर सफलतापूर्वक भेजा गया!");
-  document.getElementById("medicalForm").reset();
-});
+  document.getElementById("medicalForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    document.getElementById("infoBox").style.display = "block";
+    document.getElementById("infoBox").innerText = "✅ आपका मेडिकल ऑर्डर सफलतापूर्वक सबमिट हुआ। कर्मचारी जल्द ही संपर्क करेगा।";
+  });
 </script>
 
 </body>
