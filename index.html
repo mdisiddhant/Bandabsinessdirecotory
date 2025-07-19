@@ -3,403 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>बांदा डिक्शनरी</title>
+  <title>Medical Order - Banda Ki Seva</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
     body {
-      font-family: 'Segoe UI', 'Nirmala UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      min-height: 100vh;
-      transition: all 0.5s ease;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f3f3;
+      padding: 20px;
     }
-    
-    header {
-      background: linear-gradient(90deg, #009688, #00796b);
-      color: white;
-      padding: 1.5rem 1rem;
-      text-align: center;
-      font-size: 2.2rem;
+    h2 {
+      color: #0c5a78;
+    }
+    label {
       font-weight: bold;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      position: relative;
-      z-index: 10;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      transition: all 0.4s ease;
     }
-    
-    .vip-mode header {
-      background: linear-gradient(90deg, #00c853, #009624);
-      animation: headerGlow 1.5s infinite alternate;
+    input, select, textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
-    
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(5px);
-    }
-    
-    .mode-toggle {
-      background: linear-gradient(135deg, #ff4081, #e91e63);
-      border: none;
+    button {
+      background-color: #0c5a78;
       color: white;
       padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: bold;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.1rem;
     }
-    
-    .mode-toggle:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    }
-    
-    .mode-toggle.vip-active {
-      background: linear-gradient(135deg, #00e676, #00c853);
-      box-shadow: 0 0 15px #00e676, 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-    
-    .container {
-      padding: 25px 15px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 20px;
-      width: 180px;
-      text-align: center;
-      text-decoration: none;
-      color: #fff;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      font-weight: bold;
-      font-size: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #009688, #4db6ac);
-    }
-    
-    .card:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
-    
-    .card-icon {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-    }
-    
-    /* VIP Mode Effects */
-    .vip-mode .card {
-      animation: float 3s ease-in-out infinite;
-      box-shadow: 0 0 15px rgba(0, 200, 83, 0.5);
-    }
-    
-    .vip-mode .card:nth-child(2n) {
-      animation-delay: 0.5s;
-    }
-    
-    .vip-mode .card:nth-child(3n) {
-      animation-delay: 1s;
-    }
-    
-    .vip-mode .card:hover {
-      background: rgba(0, 230, 118, 0.15);
-      transform: translateY(-8px) scale(1.05);
-      box-shadow: 0 0 25px #00e676;
-    }
-    
-    .vip-mode .card-icon {
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    
-    .vip-mode .card-text {
-      animation: textGlow 2s ease-in-out infinite alternate;
-    }
-    
-    /* Glowing text effect */
-    .glow-text {
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-      transition: text-shadow 0.3s ease;
-    }
-    
-    .vip-mode .glow-text {
-      animation: textGlow 1.5s infinite alternate;
-    }
-    
-    /* Particles for VIP mode */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    
-    .particle {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: #00e676;
-      border-radius: 50%;
-      opacity: 0.7;
-    }
-    
-    /* Animations */
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)); }
-      to { filter: drop-shadow(0 0 15px #00e676); }
-    }
-    
-    @keyframes textGlow {
-      from { text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); }
-      to { text-shadow: 0 0 15px #00e676, 0 0 25px #00e676; }
-    }
-    
-    @keyframes headerGlow {
-      from { box-shadow: 0 0 10px rgba(0, 200, 83, 0.5); }
-      to { box-shadow: 0 0 25px #00e676; }
-    }
-    
-    /* Footer styling */
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
-      margin-top: 30px;
-    }
-    
-    @media (max-width: 600px) {
-      .container {
-        gap: 15px;
-        padding: 15px 10px;
-      }
-      
-      .card {
-        width: calc(50% - 15px);
-        padding: 15px 10px;
-        font-size: 1rem;
-      }
-      
-      header {
-        font-size: 1.8rem;
-        padding: 1.2rem 1rem;
-      }
+    button:hover {
+      background-color: #0974a2;
     }
   </style>
 </head>
 <body>
-  <div class="particles" id="particles"></div>
-  
-  <header>
-    <div class="glow-text">📘 बांदा डिक्शनरी</div>
-  </header>
-  
-  <div class="controls">
-    <button id="modeToggle" class="mode-toggle">
-      <span>🌙</span> VIP मोड सक्रिय करें
-    </button>
-  </div>
-  
-  <div class="container">
-    <a href="medical.html" class="card">
-      <div class="card-icon">💊</div>
-      <div class="card-text glow-text">मेडिकल</div>
-    </a>
-    <a href="parlor.html" class="card">
-      <div class="card-icon">💇</div>
-      <div class="card-text glow-text">पार्लर</div>
-    </a>
-    <a href="sweets.html" class="card">
-      <div class="card-icon">🍬</div>
-      <div class="card-text glow-text">मिठाई</div>
-    </a>
-    <a href="clothes.html" class="card">
-      <div class="card-icon">👗</div>
-      <div class="card-text glow-text">कपड़े</div>
-    </a>
-    <a href="mobilerepair.html" class="card">
-      <div class="card-icon">📱</div>
-      <div class="card-text glow-text">मोबाइल रिपेयर</div>
-    </a>
-    <a href="electric.html" class="card">
-      <div class="card-icon">🔌</div>
-      <div class="card-text glow-text">इलेक्ट्रिक</div>
-    </a>
-    <a href="plumber.html" class="card">
-      <div class="card-icon">🔧</div>
-      <div class="card-text glow-text">प्लंबर</div>
-    </a>
-    <a href="welding.html" class="card">
-      <div class="card-icon">⚙️</div>
-      <div class="card-text glow-text">वेल्डिंग</div>
-    </a>
-    <a href="bakery.html" class="card">
-      <div class="card-icon">🍞</div>
-      <div class="card-text glow-text">बेकरी</div>
-    </a>
-    <a href="vegetable.html" class="card">
-      <div class="card-icon">🥦</div>
-      <div class="card-text glow-text">सब्जी फल</div>
-    </a>
-    <a href="stationery.html" class="card">
-      <div class="card-icon">📚</div>
-      <div class="card-text glow-text">स्टेशनरी</div>
-    </a>
-    <a href="haircut.html" class="card">
-      <div class="card-icon">✂️</div>
-      <div class="card-text glow-text">हेयर कट</div>
-    </a>
-    <a href="mobile.html" class="card">
-      <div class="card-icon">📲</div>
-      <div class="card-text glow-text">मोबाइल</div>
-    </a>
-    <a href="shoes.html" class="card">
-      <div class="card-icon">👟</div>
-      <div class="card-text glow-text">जूते</div>
-    </a>
-    <a href="bikerepair.html" class="card">
-      <div class="card-icon">🏍️</div>
-      <div class="card-text glow-text">बाइक रिपेयर</div>
-    </a>
-    <a href="tailor.html" class="card">
-      <div class="card-icon">🧵</div>
-      <div class="card-text glow-text">टेलर</div>
-    </a>
-    <a href="tea.html" class="card">
-      <div class="card-icon">☕</div>
-      <div class="card-text glow-text">चाय स्टॉल</div>
-    </a>
-    <a href="juice.html" class="card">
-      <div class="card-icon">🧃</div>
-      <div class="card-text glow-text">जूस सेंटर</div>
-    </a>
-    <a href="autoparts.html" class="card">
-      <div class="card-icon">🚗</div>
-      <div class="card-text glow-text">ऑटो पार्ट्स</div>
-    </a>
-    <a href="restaurant.html" class="card">
-      <div class="card-icon">🍽️</div>
-      <div class="card-text glow-text">रेस्टोरेंट</div>
-    </a>
-  </div>
-  
-  <footer>
-    बांदा डिक्शनरी - सभी स्थानीय सेवाएं एक ही स्थान पर
-  </footer>
+  <h2>🩺 Banda Medical Seva</h2>
+  <form id="medicalForm">
+    <label>👤 आपका नाम:</label>
+    <input type="text" name="name" required />
+    
+    <label>📞 मोबाइल नंबर:</label>
+    <input type="tel" name="phone" required pattern="[0-9]{10}" />
+    
+    <label>📍 अपना एरिया चुनें:</label>
+    <select name="area" id="areaSelect" required>
+      <option value="">-- एरिया चुनें --</option>
+      <option value="Swaraj Colony">Swaraj Colony</option>
+      <option value="Kalu Kuwan">Kalu Kuwan</option>
+      <option value="Babulal Chauraha">Babulal Chauraha</option>
+      <option value="Banda Station">Banda Station</option>
+      <option value="Chandela Nagar">Chandela Nagar</option>
+    </select>
+
+    <label>💊 दवा का नाम (यदि पता हो):</label>
+    <textarea name="medicine" placeholder="Ex: Dolo 650, Paracetamol Syrup..."></textarea>
+
+    <label>📷 डॉक्टर द्वारा लिखा पर्चा (image):</label>
+    <input type="file" accept="image/*" name="image" id="imageInput" />
+
+    <button type="submit">📨 ऑर्डर भेजें</button>
+  </form>
 
   <script>
-    // VIP mode toggle
-    const modeToggle = document.getElementById('modeToggle');
-    const body = document.body;
-    let vipMode = false;
-    
-    modeToggle.addEventListener('click', () => {
-      vipMode = !vipMode;
-      body.classList.toggle('vip-mode', vipMode);
-      modeToggle.classList.toggle('vip-active', vipMode);
-      modeToggle.innerHTML = vipMode ? 
-        '<span>✨</span> VIP मोड सक्रिय' : 
-        '<span>🌙</span> VIP मोड सक्रिय करें';
-    });
-    
-    // Create particles for VIP mode
-    const particlesContainer = document.getElementById('particles');
-    
-    function createParticles() {
-      particlesContainer.innerHTML = '';
-      
-      if (!vipMode) return;
-      
-      for (let i = 0; i < 100; i++) {
-        const particle = document.createElement('div');
-        particle.classList.add('particle');
-        
-        // Random position
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        
-        // Random size
-        const size = Math.random() * 3 + 1;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        
-        // Random animation
-        const duration = Math.random() * 5 + 3;
-        particle.style.animation = `float ${duration}s infinite ease-in-out`;
-        particle.style.animationDelay = `${Math.random() * 2}s`;
-        
-        particlesContainer.appendChild(particle);
+    const form = document.getElementById('medicalForm');
+    const areaToWhatsApp = {
+      "Swaraj Colony": "https://wa.me/919999000001?text=",
+      "Kalu Kuwan": "https://wa.me/919999000002?text=",
+      "Babulal Chauraha": "https://wa.me/919999000003?text=",
+      "Banda Station": "https://wa.me/919999000004?text=",
+      "Chandela Nagar": "https://wa.me/919999000005?text="
+    };
+
+    const telegramBotToken = "7729928604:AAEINikbhwHTMSK1pgV3nROUfSGEVb-z2r4";
+    const telegramChatId = "6798434092";
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const name = formData.get("name");
+      const phone = formData.get("phone");
+      const area = formData.get("area");
+      const medicine = formData.get("medicine");
+      const imageFile = formData.get("image");
+
+      const message = `🩺 *New Medical Order*\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Area: ${area}\n💊 Medicine: ${medicine || "Not Specified"}`;
+
+      // 1. Send to WhatsApp (open in new tab)
+      const waLink = areaToWhatsApp[area] + encodeURIComponent(message);
+      window.open(waLink, '_blank');
+
+      // 2. Send to Telegram (text)
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: message,
+          parse_mode: "Markdown"
+        })
+      });
+
+      // 3. Upload image to Telegram
+      if (imageFile && imageFile.size > 0) {
+        const imgData = new FormData();
+        imgData.append("chat_id", telegramChatId);
+        imgData.append("photo", imageFile);
+        imgData.append("caption", `📷 Image from: ${name} (${phone})`);
+
+        await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, {
+          method: "POST",
+          body: imgData
+        });
       }
-    }
-    
-    // Update particles when VIP mode changes
-    modeToggle.addEventListener('click', createParticles);
-    
-    // Initial particles (none until VIP mode activated)
-    createParticles();
-    
-    // Add subtle hover effect to all cards
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = vipMode ? 
-          'translateY(-8px) scale(1.05)' : 
-          'translateY(-8px) scale(1.03)';
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
+
+      alert("✅ ऑर्डर भेज दिया गया है!");
+      form.reset();
     });
   </script>
 </body>
-  </html>
+</html>
